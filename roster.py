@@ -10,8 +10,6 @@ class ClassConfig(object):
 
 class RosterMaker(object):
 	"""Given a .csv file from Canvas, makes a roster container class object."""
-	HEADER_BASE = ['Student', 'ID', 'SIS User ID', 'SIS Login ID', 'Section']
-
 	def __init__(self, file):
 		super(RosterMaker, self).__init__()
 		
