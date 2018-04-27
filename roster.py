@@ -1,4 +1,4 @@
-import csv, os
+import csv, os, Levenshtein
 
 class ClassConfig(object):
 	"""Makes a class configuration given a .json file containing the relevant information.
@@ -6,7 +6,6 @@ class ClassConfig(object):
 	def __init__(self, configfile):
 		super(ClassConfig, self).__init__()
 		self.configfile = configfile
-
 
 class RosterMaker(object):
 	"""Given a .csv file from Canvas, makes a roster container class object."""
@@ -27,6 +26,13 @@ class RosterMaker(object):
 			studentlist = [Student(row) for row in rows[2:]]
 			for student in studentlist:
 				self.students[student.netid] = student
+
+	def FuzzyMatch(self, netid):
+		if netid in self.students: return netid
+		for key in self.students.keys():
+			# use the magic constant of 2 for now?
+			if Levenshtein.distance(netid, key) < 2: return key
+		return None
 			
 
 

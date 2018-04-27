@@ -1,6 +1,5 @@
 import csv, os
 from roster import RosterMaker
-from types import *
 
 class Calculator(object):
 	"""Class for calculating grades.
@@ -21,7 +20,7 @@ class Calculator(object):
 		name = student.name
 		result = self._method(student)
 		assert not result is None, 'Calculation was none. Student: ' + name
-		assert type(result) is IntType, 'Result was not an integer. Got: ' + str(result)
+		assert type(result) is int, 'Result was not an integer. Got: ' + str(result)
 		return result
 
 
@@ -34,7 +33,7 @@ class CSVMaker(object):
 		super(CSVMaker, self).__init__()
 
 		assert not assignment_name is None
-		assert type(assignment_name) is StringType, 'Assignment name invalid.'
+		assert type(assignment_name) is str, 'Assignment name invalid.'
 		self._assignment_name = assignment_name
 		
 		self._output_file = output_file
@@ -68,7 +67,7 @@ class CSVMaker(object):
 	def WriteCSV(self):
 		print('Writing to output file: ' + self._output_file)
 
-		with open(self._output_file, 'wb') as csvfile:
+		with open(self._output_file, 'w') as csvfile:
 			writer = csv.DictWriter(csvfile, fieldnames=self._header)
 			writer.writeheader()
 			for row in self._rows: writer.writerow(row)
