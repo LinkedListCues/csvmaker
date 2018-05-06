@@ -1,47 +1,53 @@
 import csv, Levenshtein, re
+import argparse
 from roster import *
 from grademaker import *
 
 GRADES = {}
 
-def Calculate(student):
-    if student not in GRADES: return 0
-        return GRADES[student]
+def Calculate(netid):
+    if netid not in GRADES: return 0
+    return GRADES[netid]
 
 def GetNetid(row, roster):
     netid = row[2].lower()
-        return roster.FuzzyMatch(netid)
+    return roster.FuzzyMatch(netid)
 
 regex = re.compile('[^a-zA-Z]')
-def GetFruit(row, fruits):
-    fruit = row[3]
-        fruit = fruit.lower()
-        fruit = regex.sub('', fruit)
-        if fruit in fruits: return fruit
-        for f in fruits:
-            if Levenshtein.distance(f, fruit) < 3: return f
+def GetWord(row, word):
+    word = row[3]
+    word = word.lower()
+    word = regex.sub('', word)
+    if word in words: return word
+    for w in words:
+        if Levenshtein.distance(w, word) < 3: return w
 
-def SetGrade(student, fruit):
-    if student is None: return
-        grade = 1 if fruit else 0
-        # assert student not in GRADES, 'Duplicate student ' + str(student)
-        GRADES[student] = grade
+def SetGrade(netid, word):
+    if netid is None: return
+    grade = 1 if word else 0
+    # assert student not in GRADES, 'Duplicate student ' + str(student)
+    GRADES[netid] = grade
 
 if __name__ == '__main__':
+#    parser = argparse.ArgumentParser(description='Process and make a Canvas csv.')
+#    parser.add_argument('roster', metavar='f', type=str, nargs=1,
+#            help='The csv rotserfile to use.')
+
     rostermaker = RosterMaker('secret/roster.csv')
 
-        resultsfile = 'secret/week4.csv'
-        with open(resultsfile, 'r') as csvfile:
-            reader = csv.reader(csvfile)
-                rows = [row for row in reader][1:]
-                fruits = ['dragonfruit', 'lemon', 'persimmon', 'kumquat']
-                for row in rows:
-                    netid = GetNetid(row, rostermaker)
-                        fruit = GetFruit(row, fruits)
-                        SetGrade(netid, fruit)
+    resultsfile = 'secret/week5.csv'
+    with open(resultsfile, 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        rows = [row for row in reader][1:]
 
-        calculator = Calculator(rostermaker, Calculate)
-        calculator.CalculateAll()
+    words = ['giraffe', 'snake', 'caterpillar', 'camel']
+    for row in rows:
+        netid = GetNetid(row, rostermaker)
+        word = GetWord(row, words)
+        SetGrade(netid, word)
 
-        csv = CSVMaker('Discussion Week 4')
-        csv.MakeCSV(rostermaker, calculator)
+    calculator = Calculator(rostermaker, Calculate)
+    calculator.CalculateAll()
+
+    csv = CSVMaker('Discussion Week 5')
+    csv.MakeCSV(rostermaker, calculator)
